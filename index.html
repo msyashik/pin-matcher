@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pin Generator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="pin-generator half-width">
+                    <input id="pinShow" class="form-control" type="text">
+                    <button onclick="pinGenerate()" class="generate-btn">Generate Pin</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="input-section half-width">
+                    <input id="createNumberCalc" class="form-control" type="text">
+                    <div class="numbers">
+                        <div class="calc-body">
+                            <div class="calc-button-row">
+                              <div onclick="calculatorDigit('7')" class="button">7</div>
+                              <div onclick="calculatorDigit('8')" class="button">8</div>
+                              <div onclick="calculatorDigit('9')" class="button">9</div>
+                            </div>
+                            <div class="calc-button-row">
+                              <div onclick="calculatorDigit('4')" class="button">4</div>
+                              <div onclick="calculatorDigit('5')" class="button">5</div>
+                              <div onclick="calculatorDigit('6')" class="button">6</div>
+                            </div>
+                            <div class="calc-button-row">
+                              <div onclick="calculatorDigit('1')" class="button">1</div>
+                              <div onclick="calculatorDigit('2')" class="button">2</div>
+                              <div onclick="calculatorDigit('3')" class="button">3</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div onclick="calculatorDigit('<')" class="button"><</div>
+                                <div onclick="calculatorDigit('0')" class="button">0</div>
+                                <div onclick="calculatorDigit('C')" class="button">C</div>
+                            </div>
+                            <div>
+                                <button id="disableButton" onclick="matchNumbers()" type="submit" class="submit-btn">Submit</button>
+                                <p class="action-left"><span id="tryLeft">3</span> try left</p>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="notify-section">
+            <p id="notCorrect" class="notify">❌ Pin Didn't Match, Please try again</p>
+            <p id="correct" class="notify">✅ Pin Matched... Secret door is opening for you</p>
+        </div>
+    </div>
+    <script>
+        refreshButtons();
+        var totalSubmit = 3;
+
+        function pinGenerate()
+        {
+            refreshButtons();
+            document.getElementById('createNumberCalc').value = "";
+            const newPin = Math.floor(1000 + (Math.random()*9000));
+            document.getElementById('pinShow').value = newPin;
+        }
+        function calculatorDigit(number){
+            refreshButtons();
+            if(number == 'C')
+            {
+                document.getElementById('createNumberCalc').value = "";
+            }
+            else if(number == '<')
+            {
+                const prevString = document.getElementById('createNumberCalc').value;
+                const lengthString = prevString.length;
+                if(lengthString > 0){
+                    const currentString = prevString.slice(0,lengthString-1);
+                    document.getElementById('createNumberCalc').value = currentString;
+                }
+            }
+            else{
+                const prevNum = document.getElementById('createNumberCalc').value;
+                document.getElementById('createNumberCalc').value = prevNum + number;
+            }
+        }
+        function matchNumbers(){
+            const calcNum = document.getElementById('createNumberCalc').value;
+            const randNum = document.getElementById('pinShow').value;
+            if(calcNum == randNum){
+                document.getElementById('correct').style.display = "block";
+            }
+            else{
+                totalSubmit--;
+                document.getElementById('notCorrect').style.display = "block";
+                document.getElementById('tryLeft').innerText = totalSubmit;
+                if(totalSubmit <= 0){
+                    document.getElementById('disableButton').disabled = true;
+                }
+            }
+        }
+        function refreshButtons(){
+            document.getElementById("correct").style.display = "none";
+            document.getElementById("notCorrect").style.display = "none";
+        }
+    </script>
+</body>
+</html>
